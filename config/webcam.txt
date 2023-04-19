@@ -1,0 +1,2 @@
+camera="usb"
+camera_usb_options="-r 1920x1080 -f 10 -d /dev/v4l/by-id/usb-HD_Web_Camera_HD_Web_Camera_Ucamera001-video-index0"

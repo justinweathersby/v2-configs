@@ -1,0 +1,6 @@
+/backup/*
+/certs/*
+/comms/*
+/gcodes/*
+/logs/*
+systemd
