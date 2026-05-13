@@ -33,56 +33,28 @@ serial: /dev/serial/by-id/usb-Klipper_stm32f446xx_41002F000A50534841313020-if00
 restart_method: command
 ##--------------------------------------------------------------------
 
-# [mcu rpi]
-# serial: /tmp/klipper_host_mcu
+[mcu rpi]
+serial: /tmp/klipper_host_mcu
 
 [printer]
 kinematics: corexy
 max_velocity: 300  
 max_accel: 3200             #Old Value: 3000
-max_z_velocity: 50          #Max 15 for 12V TMC Drivers, can increase for 24V
-max_z_accel: 500
+max_z_velocity: 15          #Max 15 for 12V TMC Drivers, can increase for 24V
+max_z_accel: 350
 square_corner_velocity: 5.0
-
-#####################################################################
-#   Autotune TMC Motors
-#####################################################################
-
-[autotune_tmc stepper_x]
-motor: ldo-42sth40-2004mah
-tuning_goal: performance
-
-[autotune_tmc stepper_y]
-motor: ldo-42sth40-2004mah
-tuning_goal: performance
-
-[autotune_tmc stepper_z]
-motor: ldo-42sth48-2004ac
-tuning_goal: performance
-
-[autotune_tmc stepper_z1]
-motor: ldo-42sth48-2004ac
-tuning_goal: performance
-
-[autotune_tmc stepper_z2]
-motor: ldo-42sth48-2004ac
-tuning_goal: performance
-
-[autotune_tmc stepper_z3]
-motor: ldo-42sth48-2004ac
-tuning_goal: performance
 
 #####################################################################
 #   ADXL Settings
 #####################################################################
 
-# [adxl345]
-# cs_pin: rpi:None
+[adxl345]
+cs_pin: rpi:None
 
-# [resonance_tester]
-# accel_chip: adxl345
-# probe_points:
-#     150, 150, 20
+[resonance_tester]
+accel_chip: adxl345
+probe_points:
+    150, 150, 20
 
 #####################################################################
 #   Input Shaper
@@ -108,10 +80,10 @@ enable_pin: !PF14
 rotation_distance: 40
 microsteps: 32
 full_steps_per_rotation: 400  #set to 400 for 0.9 degree stepper
-endstop_pin: PG9
+endstop_pin: PG6
 position_min: 0
-position_endstop: 304
-position_max: 304
+position_endstop: 300
+position_max: 300
 homing_speed: 50   #Max 100
 homing_retract_dist: 5
 homing_positive_dir: true
@@ -133,10 +105,10 @@ enable_pin: !PF15
 rotation_distance: 40
 microsteps: 32
 full_steps_per_rotation: 400  #set to 400 for 0.9 degree stepper
-endstop_pin: PG6
-position_min: -5
-position_endstop: 300
-position_max: 300
+endstop_pin: PG9
+position_min: 0
+position_endstop: 305
+position_max: 305
 homing_speed: 50  #Max 100
 homing_retract_dist: 5
 homing_positive_dir: true
@@ -165,8 +137,8 @@ gear_ratio: 80:16
 microsteps: 32
 
 endstop_pin: probe:z_virtual_endstop
-position_max: 295
-position_min: -5
+position_max: 280
+position_min: -6
 homing_speed: 8
 second_homing_speed: 3
 homing_retract_dist: 3
@@ -240,9 +212,9 @@ stealthchop_threshold: 0
 #   Extruder
 #####################################################################
 
-# #  Connected to MOTOR_6
-# #  Heater - HE0
-# #  Thermistor - T0
+##  Connected to MOTOR_6
+##  Heater - HE0
+##  Thermistor - T0
 # [extruder]
 # step_pin: PE2
 # dir_pin: PE3
@@ -260,16 +232,12 @@ stealthchop_threshold: 0
 # full_steps_per_rotation: 200    #200 for 1.8 degree, 400 for 0.9 degree
 # nozzle_diameter: 0.400
 # filament_diameter: 1.75
-# # heater_pin: PA2
-# heater_pin:PB10
+# heater_pin: PA2
 # ##  Validate the following thermistor type to make sure it is correct
 # ##  See https://www.klipper3d.org/Config_Reference.html#common-thermistors for additional options
 # sensor_type: ATC Semitec 104GT-2
-# # sensor_pin: PF4
-# sensor_pin: PF5
-# # min_temp: 10
-# # max_temp: 270
-# min_temp: -270
+# sensor_pin: PF4
+# min_temp: 10
 # max_temp: 270
 # max_power: 1.0
 # min_extrude_temp: 170
@@ -348,34 +316,33 @@ max_temp: 100
 #   Probe
 #####################################################################
 
-# Moves to Stealth Changer config
-# [probe]
-# pin: ^!PG11
-# x_offset: 0
-# y_offset: 0
-# #z_offset: 6.42
-# speed: 5
-# # samples:3 
-# # samples_result: median
-# # sample_retract_dist: 2.0
-# # samples_tolerance: 0.01
-# # samples_tolerance_retries: 3
-# activate_gcode:
-#     {% set PROBE_TEMP = 150 %}
-#     {% set MAX_TEMP = PROBE_TEMP + 5 %}
-#     {% set ACTUAL_TEMP = printer.extruder.temperature %}
-#     {% set TARGET_TEMP = printer.extruder.target %}
+[probe]
+pin: ^!PG11
+x_offset: 0
+y_offset: 0
+#z_offset: 6.42
+speed: 5
+# samples:3 
+# samples_result: median
+# sample_retract_dist: 2.0
+# samples_tolerance: 0.01
+# samples_tolerance_retries: 3
+activate_gcode:
+    {% set PROBE_TEMP = 150 %}
+    {% set MAX_TEMP = PROBE_TEMP + 5 %}
+    {% set ACTUAL_TEMP = printer.extruder.temperature %}
+    {% set TARGET_TEMP = printer.extruder.target %}
 
-#     {% if TARGET_TEMP > PROBE_TEMP %}
-#         { action_respond_info('Extruder temperature target of %.1fC is too high, lowering to %.1fC' % (TARGET_TEMP, PROBE_TEMP)) }
-#         M109 S{ PROBE_TEMP }
-#     {% else %}
-#         # Temperature target is already low enough, but nozzle may still be too hot.
-#         {% if ACTUAL_TEMP > MAX_TEMP %}
-#             { action_respond_info('Extruder temperature %.1fC is still too high, waiting until below %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
-#             TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }
-#         {% endif %}
-#     {% endif %}
+    {% if TARGET_TEMP > PROBE_TEMP %}
+        { action_respond_info('Extruder temperature target of %.1fC is too high, lowering to %.1fC' % (TARGET_TEMP, PROBE_TEMP)) }
+        M109 S{ PROBE_TEMP }
+    {% else %}
+        # Temperature target is already low enough, but nozzle may still be too hot.
+        {% if ACTUAL_TEMP > MAX_TEMP %}
+            { action_respond_info('Extruder temperature %.1fC is still too high, waiting until below %.1fC' % (ACTUAL_TEMP, MAX_TEMP)) }
+            TEMPERATURE_WAIT SENSOR=extruder MAXIMUM={ MAX_TEMP }
+        {% endif %}
+    {% endif %}
 
 
 #####################################################################
@@ -425,14 +392,16 @@ max_power: 1.0
 #   LED Caselights and Neopixels
 #####################################################################
 
-[neopixel caselight]
-pin: PB0
-chain_count: 36
-color_order: GRBW
-initial_RED: 0.63
-initial_GREEN: 0.13
-initial_BLUE: 0.94
-initial_WHITE: 0.25   # start with 50% white
+# [neopixel caselight]
+# pin: PB0
+# chain_count: 38
+# color_order: GRB
+# # initial_RED: 0.63
+# # initial_GREEN: 0.13
+# # initial_BLUE: 0.94
+# initial_RED: 0.149
+# initial_GREEN: 0.7176
+# initial_BLUE: 1
 
 # [neopixel sb_light]
 # pin: PB6
@@ -450,15 +419,14 @@ initial_WHITE: 0.25   # start with 50% white
 [idle_timeout]
 timeout: 4000
 
-# Handled by StealthChanger config with homing override
-# [safe_z_home]
-# ##  XY Location of the Z Endstop Switch
-# ##  Update -10,-10 to the XY coordinates of your endstop pin 
-# ##  (such as 157,305) after going through Z Endstop Pin
-# ##  Location Definition step.
-# home_xy_position:150,150
-# speed:100
-# z_hop:10
+[safe_z_home]
+##  XY Location of the Z Endstop Switch
+##  Update -10,-10 to the XY coordinates of your endstop pin 
+##  (such as 157,305) after going through Z Endstop Pin
+##  Location Definition step.
+home_xy_position:150,150
+speed:100
+z_hop:10
 
 [quad_gantry_level]
 ##  Use QUAD_GANTRY_LEVEL to level a gantry.
@@ -519,7 +487,6 @@ contrast: 63
 spi_software_miso_pin: EXP2_1
 spi_software_mosi_pin: EXP2_6
 spi_software_sclk_pin: EXP2_2
-menu_reverse_navigation: True
 
 [neopixel btt_mini12864]
 #  To control Neopixel RGB in mini12864 display
@@ -538,33 +505,6 @@ color_order: RGB
 #        SET_LED LED=btt_mini12864 RED=1 GREEN=1 BLUE=1 INDEX=1 TRANSMIT=0
 #        SET_LED LED=btt_mini12864 RED=1 GREEN=0 BLUE=0 INDEX=2 TRANSMIT=0
 #        SET_LED LED=btt_mini12864 RED=1 GREEN=0 BLUE=0 INDEX=3 
-
-#####################################################################
-#   Axiscope
-#####################################################################
-
-[axiscope]
-pin: PG10                # Endstop pin
-zswitch_x_pos: 226.71     # REQUIRED - X position of the endstop switch
-zswitch_y_pos: -18.46     # REQUIRED - Y position of the endstop switch
-zswitch_z_pos: 7.8        # REQUIRED - Z position + some clearance of the endstop switch
-lift_z: 1                 # OPTIONAL - Amount to lift Z before moving (default: 1)
-move_speed: 60            # OPTIONAL - XY movement speed in mm/s (default: 60)
-z_move_speed: 10          # OPTIONAL - Z movement speed in mm/s (default: 10)
-start_gcode: 
-  {% set tools = printer.toolchanger.tool_numbers %}
-  {% for tool in tools %}
-      M104 T{tool} S150
-  {% endfor %}
-before_pickup_gcode: M118 pickup_gcode
-after_pickup_gcode: M118 after_pickup_gcode
-                    # NOZZLE_SCRUBBER_W
-finish_gcode: M118 Calibration complete
-  {% set tools = printer.toolchanger.tool_numbers %}
-  {% for tool in tools %}
-      M104 T{tool} S0
-  {% endfor %}
-  T0
 
 
 #####################################################################
@@ -647,16 +587,10 @@ recover_velocity: 300.0
 # [include nozzle_scrub.cfg]
 
 #####################################################################
-#  Stealth Changer Configs
-#####################################################################
-[include toolchanger/readonly-configs/toolchanger-include.cfg]
-
-#####################################################################
 #   Include mainsails config
 #####################################################################
 [include mainsail.cfg]
 [exclude_object]
-[respond]
 
 #####################################################################
 #  Bed Fans
@@ -667,11 +601,6 @@ recover_velocity: 300.0
 #  Macros
 #####################################################################
 [include macros.cfg]
-
-#####################################################################
-#  Dock Tuner
-#####################################################################
-[include dock_tuner.cfg]
 
 #####################################################################
 #   Include github backup config
@@ -687,14 +616,20 @@ recover_velocity: 300.0
 #*# pid_ki = 1.513
 #*# pid_kd = 291.249
 #*#
+#*# [extruder]
+#*# control = pid
+#*# pid_kp = 32.841
+#*# pid_ki = 5.092
+#*# pid_kd = 52.956
+#*#
 #*# [bed_mesh default]
 #*# version = 1
 #*# points =
-#*# 	0.081566, 0.139066, 0.127816, 0.115316, 0.084066
-#*# 	0.021566, 0.076566, 0.080316, 0.046566, 0.019066
-#*# 	0.024066, 0.025316, 0.074066, 0.027816, 0.030316
-#*# 	0.027816, 0.067816, 0.086566, 0.049066, 0.035316
-#*# 	0.071566, 0.115316, 0.127816, 0.091566, 0.080316
+#*# 	  0.081566, 0.139066, 0.127816, 0.115316, 0.084066
+#*# 	  0.021566, 0.076566, 0.080316, 0.046566, 0.019066
+#*# 	  0.024066, 0.025316, 0.074066, 0.027816, 0.030316
+#*# 	  0.027816, 0.067816, 0.086566, 0.049066, 0.035316
+#*# 	  0.071566, 0.115316, 0.127816, 0.091566, 0.080316
 #*# tension = 0.2
 #*# min_x = 25.0
 #*# algo = lagrange
@@ -706,11 +641,14 @@ recover_velocity: 300.0
 #*# mesh_x_pps = 2
 #*# max_x = 275.0
 #*#
+#*# [probe]
+#*# z_offset = -0.610
+#*#
 #*# [input_shaper]
-#*# shaper_type_x = mzv
-#*# shaper_freq_x = 56.4
+#*# shaper_type_x = ei
+#*# shaper_freq_x = 69.6
 #*# shaper_type_y = mzv
-#*# shaper_freq_y = 40.4
+#*# shaper_freq_y = 40.2
 #*#
 #*# [skew_correction Califlower]
 #*# xy_skew = 0.0024132808429575816

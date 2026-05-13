@@ -34,16 +34,19 @@ type = web
 repo = mainsail-crew/mainsail
 path = ~/mainsail
 
-[update_manager happy-hare]
+[update_manager klipper-toolchanger-easy]
 type = git_repo
-path = ~/Happy-Hare
-origin = https://github.com/moggieuk/Happy-Hare.git
-primary_branch = main
-install_script = install.sh
+channel = dev
+path = ~/klipper-toolchanger-easy
+origin = https://github.com/jwellman80/klipper-toolchanger-easy.git
 managed_services = klipper
+primary_branch = main
 
-[mmu_server]
-enable_file_preprocessor = True
-enable_toolchange_next_pos = True
-update_spoolman_location = True
+[update_manager axiscope]
+type = git_repo
+path = /home/pi/axiscope
+origin = https://github.com/nic335/Axiscope.git
+primary_branch = main
+is_system_service = True
+managed_services = axiscope
 
