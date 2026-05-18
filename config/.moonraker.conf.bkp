@@ -13,6 +13,8 @@ cors_domains =
 	http://my.mainsail.xyz
 	http://*.local
 	http://*.lan
+	https://voron2.jtime.dev
+	https://voron2.jtime.dev:*
 trusted_clients = 
 	10.0.0.0/8
 	127.0.0.0/8
@@ -49,4 +51,14 @@ origin = https://github.com/nic335/Axiscope.git
 primary_branch = main
 is_system_service = True
 managed_services = axiscope
+
+[update_manager Klippain-ShakeTune]
+type = git_repo
+origin = https://github.com/Frix-x/klippain-shaketune.git
+path = ~/klippain_shaketune
+virtualenv = /home/pi/klippy-env
+requirements = requirements.txt
+system_dependencies = system-dependencies.json
+primary_branch = main
+managed_services = klipper
 
